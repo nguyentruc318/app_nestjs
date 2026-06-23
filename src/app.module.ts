@@ -5,6 +5,8 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import databaseConfig from './configs/database.config';
+import { AuthModule } from './routes/auth/auth.module';
+import { ShareModule } from './shared/share.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import databaseConfig from './configs/database.config';
         configService.get('database') as TypeOrmModuleOptions,
       inject: [ConfigService],
     }),
+    AuthModule,
+    ShareModule,
   ],
   controllers: [AppController],
   providers: [AppService],

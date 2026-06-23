@@ -1,11 +1,14 @@
-// import { z } from 'zod';
+import { z } from 'zod';
+import { createZodDto } from 'nestjs-zod';
 
-// export const LoginAuthSchema = z.object({
-//   name: z.string().min(1, 'Name is required'),
+export const LoginSchema = z.object({
+  email: z.string().email('Email không hợp lệ'),
+  password: z.string().min(8, 'Mật khẩu tối thiểu 8 ký tự'),
+});
 
-//   email: z.email('Invalid email'),
+export class LoginDto extends createZodDto(LoginSchema) {}
 
-//   password: z.string().min(8, 'Password must be at least 8 characters'),
-// });
-
-// export type LoginAuthDto = z.infer<typeof LoginAuthSchema>;
+export interface LoginResponse {
+  accessToken: string;
+  refreshToken: string;
+}
