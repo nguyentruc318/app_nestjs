@@ -7,6 +7,8 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import databaseConfig from './configs/database.config';
 import { AuthModule } from './routes/auth/auth.module';
 import { ShareModule } from './shared/share.module';
+import { RedisModule } from './shared/redis/redis.module';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
@@ -20,8 +22,15 @@ import { ShareModule } from './shared/share.module';
         configService.get('database') as TypeOrmModuleOptions,
       inject: [ConfigService],
     }),
+    BullModule.forRoot({
+      connection: {
+        host: 'localhost',
+        port: 6379,
+      },
+    }),
     AuthModule,
     ShareModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [AppService],

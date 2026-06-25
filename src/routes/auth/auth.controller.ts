@@ -15,4 +15,10 @@ export class AuthController {
   ) {
     return this.authService.login(dto, ipAddress, userAgent);
   }
+
+  @Post('register')
+  @HttpCode(HttpStatus.OK)
+  register() {
+    return this.authService.register();
+  }
 }

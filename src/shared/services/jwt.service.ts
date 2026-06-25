@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtModuleOptions, JwtService } from '@nestjs/jwt';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { v4 as uuidv4 } from 'uuid';
 import {
   AccessTokenPayloadCreate,
@@ -12,13 +12,13 @@ export class CustomJwtService {
 
   async generateAccessToken(
     payload: AccessTokenPayloadCreate,
-    options?: JwtModuleOptions,
   ): Promise<string> {
+    const accessTokenExpire = process.env.ACCESS_TOKEN_EXPIRE ?? '30m';
     return this.jwtService.signAsync(
-      { id: uuidv4(), ...payload },
+      { id: uuidv4(), ...payload } as Record<string, any>,
       {
         secret: process.env.JWT_SECRET!,
-        expiresIn: options?.signOptions?.expiresIn || '30m',
+        expiresIn: accessTokenExpire as JwtSignOptions['expiresIn'],
       },
     );
   }
@@ -26,11 +26,12 @@ export class CustomJwtService {
   async generateRefreshToken(
     payload: RefreshTokenPayloadCreate,
   ): Promise<string> {
+    const refreshTokenExpire = process.env.REFRESH_TOKEN_EXPIRE ?? '7d';
     return this.jwtService.signAsync(
-      { id: uuidv4(), ...payload },
+      { id: uuidv4(), ...payload } as Record<string, any>,
       {
         secret: process.env.JWT_SECRET!,
-        expiresIn: '30d',
+        expiresIn: refreshTokenExpire as JwtSignOptions['expiresIn'],
       },
     );
   }

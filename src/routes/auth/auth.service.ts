@@ -8,6 +8,9 @@ import { RefreshTokenEntity } from '../../shared/entities/refresh-token.entity';
 import { LoginDto, LoginResponse } from './auth.dto';
 import { CustomJwtService } from 'src/shared/services/jwt.service';
 import { HashingService } from 'src/shared/services/hash.service';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -22,8 +25,16 @@ export class AuthService {
 
     private readonly customJwtService: CustomJwtService,
     private readonly HashingService: HashingService,
+    @InjectQueue('email')
+    private readonly emailQueue: Queue,
   ) {}
 
+  async register() {
+    await this.emailQueue.add('send-otp', {
+      email: 'buinguyentruc2003tb@gmail.com',
+      otp: '123456',
+    });
+  }
   async login(
     dto: LoginDto,
     ipAddress: string,
